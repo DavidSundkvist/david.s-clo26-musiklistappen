@@ -41,7 +41,9 @@ Eftersom låtar och album ligger i olika tabeller behöver de kopplas ihop. Jag 
 Det passade min app eftersom användaren då kan se vilket album varje låt tillhör.
 
 3. **Vad skulle du gjort annorlunda om du byggde om den från scratch?**
+
 Om jag skulle göra om projektet hade jag planerat kodens struktur bättre från början och kontrollerat databasanslutningen tidigare.
+
 jag ska använde va transparant med assistans av AI då jag behövde hjälp med struktur och vad som kunde göras bättre med min kod samt hjälpa mig när det blev errors eller att koden inte synkade med varandra.
 
 Ett problem jag hade var att programmet inte hittade rätt databas eftersom filen låg fel och vid ett tillfälle hade fel filändelse. Jag fick därför ändra sökvägen och kontrollera att programmet använde rätt musik.db.
