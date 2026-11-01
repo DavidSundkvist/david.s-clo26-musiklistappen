@@ -88,7 +88,16 @@ public class DbHandler
     {
         // TODO: INSERT INTO ... VALUES (@titel, @langd, ...) med parametrar.
         // Tips: INSERT ger ingen data tillbaka, så använd ExecuteNonQuery().
-        throw new NotImplementedException();
+        using var connection = new SqliteConnection(_connectionString);
+        connection.Open();
+
+        using var command = connection.CreateCommand();
+        command.CommandText = "INSERT INTO songs (title, duration, album_id) VALUES (@title, @duration, @albumId);";
+
+        command.Parameters.AddWithValue("@title", song.Title);
+        command.Parameters.AddWithValue("@duration", song.Duration);
+        command.Parameters.AddWithValue("@albumId", song.AlbumId);
+        command.ExecuteNonQuery();
     }
 
     /// <summary>Tar bort en låt. Returnerar true om en rad faktiskt togs bort.</summary>

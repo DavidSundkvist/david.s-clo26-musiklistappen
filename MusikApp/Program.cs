@@ -10,7 +10,7 @@ var config = new ConfigurationBuilder()
 
 var connectionString = config.GetConnectionString("Default")
     ?? throw new InvalidOperationException("Hittar ingen connection string 'Default' i appsettings.json.");
-
+Console.WriteLine($"Databassökväg: {Path.GetFullPath("musik.db")}");
 // Börja här. Den här raden visar att inställningarna lästes in, ta bort den när du vill.
 Console.WriteLine($"Musiklistappen: börja med att få menyn att fungera!  (databas: {connectionString})");
 DbHandler db = new DbHandler(connectionString);
@@ -44,9 +44,12 @@ while (kör)
             }
             break;
 
+
         case "2":
-            Console.WriteLine("[Här lägger vi till en låt]");
+            Console.Write("Ange låtens titel: ");
+            string title = Console.ReadLine() ?? "";
             break;
+
 
         case "3":
             Console.WriteLine("[Här tar vi bort en låt]");
