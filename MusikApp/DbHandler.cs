@@ -68,12 +68,14 @@ public class DbHandler
     }
 
     /// <summary>Hämtar en specifik låt. Returnerar null om den inte finns.</summary>
+
     public Song? GetSongById(int id)
     {
         // TODO: SELECT ... WHERE Id = @id (parameter!).
         // TODO: if (reader.Read()) { ... } annars returnera null.
         throw new NotImplementedException();
     }
+
 
     /// <summary>Söker låtar där titeln innehåller söktexten.</summary>
     public List<Song> SearchSongs(string searchText)
@@ -109,11 +111,18 @@ public class DbHandler
         using var connection = new SqliteConnection(_connectionString);
         connection.Open();
 
-        using var command = connection.CreateCommand();
-        command.CommandText = "DELETE FROM songs WHERE id = @id;";
-        command.Parameters.AddWithValue("@id", id);
+        using var transaction = connection.BeginTransaction();
 
+        using var command = connection.CreateCommand();
+        command.Transaction = transaction;
+        command.CommandText = "DELETE FROM song_genres WHERE song_id = @id;";
+        command.Parameters.AddWithValue("@id", id);
+        command.ExecuteNonQuery();
+
+        command.CommandText = "DELETE FROM songs WHERE id = @id;";
         int rowsAffected = command.ExecuteNonQuery();
+
+        transaction.Commit();
 
         return rowsAffected > 0;
     }
@@ -123,10 +132,34 @@ public class DbHandler
     // ---------------------------------------------------------------
 
     /// <summary>(VG, alternativ A) Låtar tillsammans med albumets namn. Kräver en JOIN.</summary>
+
     public List<(string SongTitle, string AlbumName)> GetSongsWithAlbum()
     {
-        // TODO: SELECT Låtar.Titel, Album.Namn FROM Låtar JOIN Album ON ... ORDER BY ...
-        throw new NotImplementedException();
+        List<(string SongTitle, string AlbumName)> songs = new();
+
+        using var connection = new SqliteConnection(_connectionString);
+        connection.Open();
+
+        using var command = connection.CreateCommand();
+
+        command.CommandText = @"
+        SELECT songs.title, albums.title
+        FROM songs
+        INNER JOIN albums ON songs.album_id = albums.id
+        ORDER BY songs.title;
+    ";
+
+        using var reader = command.ExecuteReader();
+
+        while (reader.Read())
+        {
+            string songTitle = reader.GetString(0);
+            string albumName = reader.GetString(1);
+
+            songs.Add((songTitle, albumName));
+        }
+
+        return songs;
     }
 
     /// <summary>(VG, alternativ B) Låtar som är längre än medellängden. Kräver en subquery.</summary>

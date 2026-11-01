@@ -10,9 +10,9 @@ var config = new ConfigurationBuilder()
 
 var connectionString = config.GetConnectionString("Default")
     ?? throw new InvalidOperationException("Hittar ingen connection string 'Default' i appsettings.json.");
-Console.WriteLine($"Databassökväg: {Path.GetFullPath("musik.db")}");
+
 // Börja här. Den här raden visar att inställningarna lästes in, ta bort den när du vill.
-Console.WriteLine($"Musiklistappen: börja med att få menyn att fungera!  (databas: {connectionString})");
+
 DbHandler db = new DbHandler(connectionString);
 // Tips på ordning (se UPPGIFT.md):
 //   1. Skriv ut huvudmenyn (alternativ numrerade 1-N) och läs in ett val med Console.ReadLine().
@@ -27,7 +27,8 @@ while (kör)
     Console.WriteLine("1. Visa alla låtar");
     Console.WriteLine("2. Lägg till låt");
     Console.WriteLine("3. Ta bort låt");
-    Console.WriteLine("4. Avsluta");
+    Console.WriteLine("4. Visa låtar med album (VG)");
+    Console.WriteLine("5. Avsluta");
 
     Console.Write("Välj: ");
     string? val = Console.ReadLine();
@@ -110,6 +111,19 @@ while (kör)
             Console.WriteLine("Hejdå!");
             kör = false;
             break;
+
+
+        case "5":
+            {
+                var songsWithAlbums = db.GetSongsWithAlbum();
+
+                foreach (var song in songsWithAlbums)
+                {
+                    Console.WriteLine($"{song.SongTitle} - {song.AlbumName}");
+                }
+
+                break;
+            }
 
         default:
             Console.WriteLine("Ogiltigt val. Försök igen.");
