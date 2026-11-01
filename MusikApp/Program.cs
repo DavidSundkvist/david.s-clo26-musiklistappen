@@ -87,8 +87,16 @@ while (kör)
 
                 if (answer.ToLower() == "j")
                 {
-                    db.DeleteSong(songId);
-                    Console.WriteLine("Låten har tagits bort!");
+                    bool deleted = db.DeleteSong(songId);
+
+                    if (deleted)
+                    {
+                        Console.WriteLine("Låten har tagits bort!");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Ingen låt med det ID-numret hittades.");
+                    }
                 }
                 else
                 {
@@ -98,7 +106,6 @@ while (kör)
                 break;
             }
 
-     
         case "4":
             Console.WriteLine("Hejdå!");
             kör = false;

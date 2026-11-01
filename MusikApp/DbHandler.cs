@@ -113,7 +113,9 @@ public class DbHandler
         command.CommandText = "DELETE FROM songs WHERE id = @id;";
         command.Parameters.AddWithValue("@id", id);
 
-        command.ExecuteNonQuery();
+        int rowsAffected = command.ExecuteNonQuery();
+
+        return rowsAffected > 0;
     }
 
     // ---------------------------------------------------------------
