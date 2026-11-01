@@ -23,11 +23,12 @@ public class DbHandler
     // Tips: spara bara connection string här. Den kommer från appsettings.json
     // via Program.cs (t.ex. "Data Source=musik.db").
     // Öppna sedan en NY anslutning inuti varje metod nedan.
+    private readonly string _connectionString;
 
     public DbHandler(string connectionString)
     {
         // TODO: spara connectionString i ett fält som metoderna nedan kan använda.
-        throw new NotImplementedException();
+        _connectionString = connectionString;
     }
 
     // ---------------------------------------------------------------
@@ -40,7 +41,30 @@ public class DbHandler
         // TODO: SELECT från din låt-tabell med ORDER BY.
         // TODO: loopa med reader.Read() och gör ett Song-objekt av varje rad.
         // Tips: reader.GetInt32(0), reader.GetString(1) ... eller reader["Titel"].
-        throw new NotImplementedException();
+        List<Song> songs = new List<Song>();
+
+        using var connection = new SqliteConnection(_connectionString);
+        connection.Open();
+
+        using var command = connection.CreateCommand();
+        command.CommandText = "SELECT id, title, duration, album_id FROM songs ORDER BY title;";
+        using var reader = command.ExecuteReader();
+       
+        while (reader.Read())
+        {
+
+            Song song = new Song
+            {
+                Id = reader.GetInt32(0),
+                Title = reader.GetString(1),
+                Duration = reader.GetInt32(2),
+                AlbumId = reader.GetInt32(3)
+            };
+
+            songs.Add(song);
+
+        }
+        return songs;
     }
 
     /// <summary>Hämtar en specifik låt. Returnerar null om den inte finns.</summary>
