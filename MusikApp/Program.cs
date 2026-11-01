@@ -48,13 +48,57 @@ while (kör)
         case "2":
             Console.Write("Ange låtens titel: ");
             string title = Console.ReadLine() ?? "";
+
+            Console.Write("Ange låtens längd i sekunder: ");
+            int duration = int.Parse(Console.ReadLine() ?? "0");
+
+            Console.Write("Ange albumets ID: ");
+            int albumId = int.Parse(Console.ReadLine() ?? "0");
+
+            Song newSong = new Song
+            {
+                Title = title,
+                Duration = duration,
+                AlbumId = albumId
+            };
+
+            db.AddSong(newSong);
+
+            Console.WriteLine("Låten har lagts till!");
+
+
+
             break;
+
 
 
         case "3":
-            Console.WriteLine("[Här tar vi bort en låt]");
-            break;
+            {
+                Console.Write("Ange ID på låten du vill ta bort: ");
 
+                if (!int.TryParse(Console.ReadLine(), out int songId))
+                {
+                    Console.WriteLine("Felaktigt ID!");
+                    break;
+                }
+
+                Console.Write($"Är du säker på att du vill ta bort låt {songId}? (j/n): ");
+                string answer = Console.ReadLine() ?? "";
+
+                if (answer.ToLower() == "j")
+                {
+                    db.DeleteSong(songId);
+                    Console.WriteLine("Låten har tagits bort!");
+                }
+                else
+                {
+                    Console.WriteLine("Borttagningen avbröts.");
+                }
+
+                break;
+            }
+
+     
         case "4":
             Console.WriteLine("Hejdå!");
             kör = false;

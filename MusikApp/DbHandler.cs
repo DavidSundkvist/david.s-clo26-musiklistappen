@@ -106,7 +106,14 @@ public class DbHandler
         // TODO: DELETE FROM ... WHERE Id = @id.
         // Tips: ExecuteNonQuery() returnerar antalet påverkade rader.
         // Menyn i Program.cs ska fråga "Är du säker? j/n" innan den här metoden anropas.
-        throw new NotImplementedException();
+        using var connection = new SqliteConnection(_connectionString);
+        connection.Open();
+
+        using var command = connection.CreateCommand();
+        command.CommandText = "DELETE FROM songs WHERE id = @id;";
+        command.Parameters.AddWithValue("@id", id);
+
+        command.ExecuteNonQuery();
     }
 
     // ---------------------------------------------------------------
